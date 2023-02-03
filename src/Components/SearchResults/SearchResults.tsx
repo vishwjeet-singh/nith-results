@@ -24,7 +24,7 @@ const SearchResults = (props: { rollno: string; seterr: Function }) => {
       .then((res) => {
         console.log(res);
         if (!res.data) {
-          props.seterr("User not found");
+          props.seterr("Student not found");
           return;
         }
         setName(res.data.name);
