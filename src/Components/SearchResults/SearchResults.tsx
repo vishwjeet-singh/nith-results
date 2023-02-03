@@ -9,9 +9,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import "./SearchResults.scss";
-const SearchResults = (props: { rollno: string; seterr: Function }) => {
+import { Button } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
+const SearchResults = (props: { rollno: string; setroll: Function }) => {
   console.log("rendering");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
   const [sem1, setSem1] =
     useState<{ subjectName: string; pointer: string }[]>();
   const [sem2, setSem2] =
@@ -19,14 +22,11 @@ const SearchResults = (props: { rollno: string; seterr: Function }) => {
   const [roll, setRoll] = useState("");
   useEffect(() => {}, []);
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`/${props.rollno}.json`)
       .then((res) => {
         console.log(res);
-        if (!res.data) {
-          props.seterr("Student not found");
-          return;
-        }
         setName(res.data.name);
         setRoll(res.data.roll);
         const keys = Object.keys(res.data.result).filter(
@@ -50,17 +50,29 @@ const SearchResults = (props: { rollno: string; seterr: Function }) => {
         });
         setSem1(s1);
         setSem2(s2);
+        setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
 
     return () => {
       setRoll("");
     };
   }, [props.rollno]);
 
-  if (roll.length === 0) return null;
+  if (loading) return <LinearProgress color="secondary" />;
   return (
     <div className="search-results">
+      <Button
+        color="secondary"
+        onClick={() => {
+          props.setroll("");
+        }}
+      >
+        Back
+      </Button>
       <Paper elevation={2} className="inner-card">
         {name} {roll}
       </Paper>
@@ -141,11 +153,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function createData(subjectName: string, pointer: string) {
   return { subjectName, pointer };
 }
-
-const rows = [
-  createData("Analog electronics", "10"),
-  createData("Communication skills", "8"),
-];
 interface Map {
   [key: string]: string;
 }
