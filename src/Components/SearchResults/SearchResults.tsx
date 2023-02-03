@@ -9,30 +9,26 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import "./SearchResults.scss";
-const SearchResults = (props: { rollno: string }) => {
+const SearchResults = (props: { rollno: string; seterr: Function }) => {
   console.log("rendering");
   const [name, setName] = useState("");
   const [sem1, setSem1] =
     useState<{ subjectName: string; pointer: string }[]>();
   const [sem2, setSem2] =
     useState<{ subjectName: string; pointer: string }[]>();
+  const [roll, setRoll] = useState("");
+  useEffect(() => {}, []);
   useEffect(() => {
-    let branch: string = "cse";
-    if (props.rollno[3] === "5") {
-      branch = codeTobranch[parseInt(props.rollno[3]) + 5]!;
-    } else branch = codeTobranch[parseInt(props.rollno[2])]!;
     axios
-      .get(
-        `/${branch}/20${props.rollno.slice(0, 2)}/${(
-          parseInt(
-            props.rollno[3] === "5"
-              ? props.rollno.slice(4)
-              : props.rollno.slice(3)
-          ) - 1
-        ).toString()}.json`
-      )
+      .get(`/${props.rollno}.json`)
       .then((res) => {
+        console.log(res);
+        if (!res.data) {
+          props.seterr("User not found");
+          return;
+        }
         setName(res.data.name);
+        setRoll(res.data.roll);
         const keys = Object.keys(res.data.result).filter(
           (val) => val.charAt(0) === "s"
         );
@@ -56,11 +52,17 @@ const SearchResults = (props: { rollno: string }) => {
         setSem2(s2);
       })
       .catch((err) => console.log(err));
+
+    return () => {
+      setRoll("");
+    };
   }, [props.rollno]);
+
+  if (roll.length === 0) return null;
   return (
     <div className="search-results">
       <Paper elevation={2} className="inner-card">
-        {name}
+        {name} {roll}
       </Paper>
       <Paper elevation={4} className="headings">
         Semester 1
@@ -156,21 +158,4 @@ const pointer_to_grade: Map = {
   CD: "5",
   D: "4",
   F: "0",
-};
-const codeTobranch = [
-  ,
-  "civil",
-  "electrical",
-  "mechanical",
-  "ece",
-  "cse",
-  "architecture",
-  "chemical",
-  "material",
-  "ece_dual",
-  "cse_dual",
-];
-const some = {
-  cse_dual: "55",
-  ece_dual: "45",
 };

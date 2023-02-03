@@ -41,7 +41,7 @@ export default function SearchPage() {
       </div>
       {err.length !== 0 && <Paper style={{ padding: "4%" }}>{err}</Paper>}
       {err.length === 0 && rollno.length !== 0 && (
-        <SearchResults rollno={rollno} />
+        <SearchResults rollno={rollno} seterr={setErr} />
       )}
     </div>
   );
