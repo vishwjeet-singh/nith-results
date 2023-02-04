@@ -5,7 +5,7 @@ import SearchResults from "../SearchResults/SearchResults";
 import ShortSearchResults from "../ShortSearchResults/ShortSearchResults";
 import { allName as nameRoll } from "../../MappingData/nameRoll";
 import { Paper } from "@mui/material";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 export default function SearchPage() {
   const [value, setValue] = useState("");
   const [rollno, setRollno] = useState("");
@@ -35,26 +35,34 @@ export default function SearchPage() {
   }, [value]);
   return (
     <div className="search-page">
-      {rollno.length === 0 && (
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="Name or Roll no."
-            variant="outlined"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
+      <AnimatePresence>
+        {rollno.length === 0 && (
+          <motion.div
+            initial={{ x: -200, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -200, opacity: 0 }}
+          >
+            <TextField
+              id="outlined-basic"
+              label="Name or Roll no."
+              variant="outlined"
+              value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+              }}
+            />
+            <br />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {rollno.length === 0 && (
+          <ShortSearchResults
+            showData={searchRes}
+            setroll={selectRollnoHandler}
           />
-          <br />
-        </div>
-      )}
-      {rollno.length === 0 && (
-        <ShortSearchResults
-          showData={searchRes}
-          setroll={selectRollnoHandler}
-        />
-      )}
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {rollno.length !== 0 && (
           <SearchResults rollno={rollno} setroll={setRollno} />

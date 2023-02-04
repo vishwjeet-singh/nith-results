@@ -8,9 +8,9 @@ const ShortSearchResults = (props: {
 }) => {
   return (
     <motion.div
-      initial={{ x: 100 }}
-      animate={{ x: 0 }}
-      exit={{ x: -100 }}
+      initial={{ x: -500, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -500, opacity: 0 }}
       className="short-search-results"
     >
       {props.showData.length === 0 && (

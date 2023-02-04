@@ -11,8 +11,11 @@ import axios from "axios";
 import "./SearchResults.scss";
 import { Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
+import { motion } from "framer-motion";
 const SearchResults = (props: { rollno: string; setroll: Function }) => {
   console.log("rendering");
+  //STATES
+
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [sem1, setSem1] =
@@ -20,7 +23,13 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
   const [sem2, setSem2] =
     useState<{ subjectName: string; pointer: string }[]>();
   const [roll, setRoll] = useState("");
-  useEffect(() => {}, []);
+
+  //FUNCTIONS
+
+  //EFFECTS
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     setLoading(true);
     axios
@@ -62,72 +71,94 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
     };
   }, [props.rollno]);
 
+  //RENDER
   if (loading) return <LinearProgress color="secondary" />;
   if (roll.length === 0) return null;
   return (
-    <div className="search-results">
-      <Button
-        color="secondary"
-        onClick={() => {
-          props.setroll("");
-        }}
-      >
-        Back
-      </Button>
-      <Paper elevation={2} className="inner-card">
-        {name} {roll}
-      </Paper>
-      <Paper elevation={4} className="headings">
-        Semester 1
-      </Paper>
-      {sem1 && (
-        <TableContainer component={Paper} sx={{ width: "fit-content" }}>
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Subject Name</StyledTableCell>
-                <StyledTableCell align="right">Pointer</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sem1.map((row) => (
-                <StyledTableRow key={row.subjectName}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.subjectName}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.pointer}</StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-      <Paper elevation={4} className="headings">
-        Semester 2
-      </Paper>
-      {sem2 && (
-        <TableContainer component={Paper} sx={{ width: "fit-content" }}>
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Subject Name</StyledTableCell>
-                <StyledTableCell align="right">Pointer</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sem2.map((row) => (
-                <StyledTableRow key={row.subjectName}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.subjectName}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.pointer}</StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </div>
+    <motion.div
+      className="search-results"
+      initial="hidden"
+      animate="visible"
+      variants={list}
+    >
+      <motion.div variants={item}>
+        <Button
+          color="secondary"
+          onClick={() => {
+            props.setroll("");
+          }}
+        >
+          Back
+        </Button>
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper elevation={2} className="inner-card">
+          {name} {roll}
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper elevation={4} className="headings">
+          Semester 1
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        {sem1 && (
+          <TableContainer component={Paper} sx={{ width: "fit-content" }}>
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Subject Name</StyledTableCell>
+                  <StyledTableCell align="right">Pointer</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sem1.map((row) => (
+                  <StyledTableRow key={row.subjectName}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.subjectName}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.pointer}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper elevation={4} className="headings">
+          Semester 2
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        {sem2 && (
+          <TableContainer component={Paper} sx={{ width: "fit-content" }}>
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Subject Name</StyledTableCell>
+                  <StyledTableCell align="right">Pointer</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sem2.map((row) => (
+                  <StyledTableRow key={row.subjectName}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.subjectName}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.pointer}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </motion.div>
+    </motion.div>
   );
 };
 export default React.memo(SearchResults);
@@ -166,4 +197,24 @@ const pointer_to_grade: Map = {
   CD: "5",
   D: "4",
   F: "0",
+};
+const list = {
+  visible: {
+    opacity: 1,
+    transition: {
+      when: "beforeChildren",
+      staggerChildren: 0.1,
+    },
+  },
+  hidden: {
+    opacity: 0,
+    transition: {
+      when: "afterChildren",
+    },
+  },
+};
+
+const item = {
+  visible: { opacity: 1, x: 0 },
+  hidden: { opacity: 0, x: -100 },
 };
