@@ -5,6 +5,7 @@ import SearchResults from "../SearchResults/SearchResults";
 import ShortSearchResults from "../ShortSearchResults/ShortSearchResults";
 import { allName as nameRoll } from "../../MappingData/nameRoll";
 import { Paper } from "@mui/material";
+import { AnimatePresence } from "framer-motion";
 export default function SearchPage() {
   const [value, setValue] = useState("");
   const [rollno, setRollno] = useState("");
@@ -54,9 +55,11 @@ export default function SearchPage() {
           setroll={selectRollnoHandler}
         />
       )}
-      {rollno.length !== 0 && (
-        <SearchResults rollno={rollno} setroll={setRollno} />
-      )}
+      <AnimatePresence>
+        {rollno.length !== 0 && (
+          <SearchResults rollno={rollno} setroll={setRollno} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

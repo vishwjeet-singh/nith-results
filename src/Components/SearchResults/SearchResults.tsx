@@ -63,6 +63,7 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
   }, [props.rollno]);
 
   if (loading) return <LinearProgress color="secondary" />;
+  if (roll.length === 0) return null;
   return (
     <div className="search-results">
       <Button

@@ -1,34 +1,40 @@
 import { Paper } from "@mui/material";
 import React from "react";
 import "./ShortSearchResults.scss";
+import { motion } from "framer-motion";
 const ShortSearchResults = (props: {
   showData: { name: string; roll: string; cg: string | null }[];
   setroll: Function;
 }) => {
   return (
-    <div className="short-search-results">
+    <motion.div
+      initial={{ x: 100 }}
+      animate={{ x: 0 }}
+      exit={{ x: -100 }}
+      className="short-search-results"
+    >
       {props.showData.length === 0 && (
         <Paper className="the-error">Too much data found</Paper>
       )}
       {props.showData.map((val) => {
         return (
-          <Paper
+          <motion.div
             className="container"
             onClick={() => {
               props.setroll(val.roll);
             }}
             key={val.roll}
+            initial={{ opacity: 0 }}
+            whileTap={{ scale: 0.9 }}
+            whileInView={{ opacity: 1 }}
           >
-            {val.name}
-            <br />
-            {val.roll}
-            <br />
-            {val.cg}
-            <br />
-          </Paper>
+            <motion.div>{val.name}</motion.div>
+            <motion.div>{val.roll}</motion.div>
+            <motion.div>{val.cg}</motion.div>
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 };
 export default React.memo(ShortSearchResults);
