@@ -3,15 +3,15 @@
     grid-template-columns: auto auto;
     column-gap: 15px;
     row-gap: 15px;
-    margin-top: 3%;
+    margin-top: 8px;
 
     .the-error {
-        padding: 3%;
+        padding: 5px;
         width: fit-content;
     }
 
     .container {
-        padding: 3%;
+        padding: 5px;
         cursor: pointer;
     }
 }
