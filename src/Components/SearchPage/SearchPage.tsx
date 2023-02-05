@@ -3,7 +3,7 @@ import "./SearchPage.scss";
 import { TextField, Button } from "@mui/material";
 import SearchResults from "../SearchResults/SearchResults";
 import ShortSearchResults from "../ShortSearchResults/ShortSearchResults";
-import { allName as nameRoll } from "../../../public/MappingData/nameRoll";
+import { allName as nameRoll } from "../../MappingData/nameRoll";
 import { AnimatePresence, motion } from "framer-motion";
 export default function SearchPage() {
   const [value, setValue] = useState("");

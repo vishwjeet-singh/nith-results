@@ -106,7 +106,9 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
         viewport={{ once: true }}
       >
         <Paper elevation={2} className="inner-card">
-          {name} {roll}
+          <div>
+            {name} {roll}
+          </div>
         </Paper>
       </motion.div>
       <br />
@@ -117,9 +119,8 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
         viewport={{ once: true }}
       >
         <Paper elevation={2} className="inner-card">
-          cg: {cg}
-          <br />
-          sg: {sg}
+          <div>cg: {cg}</div>
+          <div>sg: {sg}</div>
         </Paper>
       </motion.div>
       {semResult &&

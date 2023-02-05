@@ -16,6 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "public/MappingData"],
+  "include": ["src", "src/MappingData"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
