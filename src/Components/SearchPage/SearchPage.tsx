@@ -4,7 +4,6 @@ import { TextField, Button } from "@mui/material";
 import SearchResults from "../SearchResults/SearchResults";
 import ShortSearchResults from "../ShortSearchResults/ShortSearchResults";
 import { allName as nameRoll } from "../../MappingData/nameRoll";
-import { Paper } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 export default function SearchPage() {
   const [value, setValue] = useState("");

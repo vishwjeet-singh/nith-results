@@ -18,11 +18,12 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
 
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sem1, setSem1] =
-    useState<{ subjectName: string; pointer: string }[]>();
-  const [sem2, setSem2] =
-    useState<{ subjectName: string; pointer: string }[]>();
+  const [semResult, setSemResult] = useState<{
+    [key: string]: { subjectName: string; credits: string; pointer: string }[];
+  }>();
   const [roll, setRoll] = useState("");
+  const [cg, setCg] = useState("");
+  const [sg, setSg] = useState("");
 
   //FUNCTIONS
 
@@ -35,30 +36,32 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
     axios
       .get(`/${props.rollno}.json`)
       .then((res) => {
-        console.log(res);
         setName(res.data.name);
-        setRoll(res.data.roll);
-        const keys = Object.keys(res.data.result).filter(
-          (val) => val.charAt(0) === "s"
-        );
-        const s1: { subjectName: string; pointer: string }[] = [];
-        const s2: { subjectName: string; pointer: string }[] = [];
-        keys.forEach((key, index) => {
-          res.data.result[key].map((val: string[]) => {
-            if (key === "s01")
-              s1.push({
-                subjectName: val[0],
-                pointer: pointer_to_grade[val[3]],
+        setRoll(res.data._id);
+        setCg(res.data.cgpi);
+        setSg(res.data.sgpi);
+        const semRes: {
+          [key: string]: {
+            subjectName: string;
+            credits: string;
+            pointer: string;
+          }[];
+        } = {};
+        res.data.result.map((val: any[], index: number) => {
+          if (val) {
+            const temp: { subjectName: any; credits: any; pointer: string }[] =
+              [];
+            val.map((ele: (string | number)[]) => {
+              temp.push({
+                subjectName: ele[0],
+                credits: ele[2],
+                pointer: pointer_to_grade[ele[3]],
               });
-            else
-              s2.push({
-                subjectName: val[0],
-                pointer: pointer_to_grade[val[3]],
-              });
-          });
+            });
+            semRes[index.toString()] = [...temp];
+          }
         });
-        setSem1(s1);
-        setSem2(s2);
+        setSemResult(semRes);
         setLoading(false);
       })
       .catch((err) => {
@@ -78,10 +81,15 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
     <motion.div
       className="search-results"
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
       variants={list}
     >
-      <motion.div variants={item}>
+      <motion.div
+        variants={item}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         <Button
           color="secondary"
           onClick={() => {
@@ -91,73 +99,71 @@ const SearchResults = (props: { rollno: string; setroll: Function }) => {
           Back
         </Button>
       </motion.div>
-      <motion.div variants={item}>
+      <motion.div
+        variants={item}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         <Paper elevation={2} className="inner-card">
           {name} {roll}
         </Paper>
       </motion.div>
-      <motion.div variants={item}>
-        <Paper elevation={4} className="headings">
-          Semester 1
+      <br />
+      <motion.div
+        variants={item}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <Paper elevation={2} className="inner-card">
+          cg: {cg}
+          <br />
+          sg: {sg}
         </Paper>
       </motion.div>
-      <motion.div variants={item}>
-        {sem1 && (
-          <TableContainer component={Paper} sx={{ width: "fit-content" }}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>Subject Name</StyledTableCell>
-                  <StyledTableCell align="right">Pointer</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sem1.map((row) => (
-                  <StyledTableRow key={row.subjectName}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.subjectName}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.pointer}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </motion.div>
-      <motion.div variants={item}>
-        <Paper elevation={4} className="headings">
-          Semester 2
-        </Paper>
-      </motion.div>
-      <motion.div variants={item}>
-        {sem2 && (
-          <TableContainer component={Paper} sx={{ width: "fit-content" }}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>Subject Name</StyledTableCell>
-                  <StyledTableCell align="right">Pointer</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sem2.map((row) => (
-                  <StyledTableRow key={row.subjectName}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.subjectName}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.pointer}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </motion.div>
+      {semResult &&
+        Object.keys(semResult).map((key) => {
+          return (
+            <motion.div
+              key={key}
+              variants={item}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <Paper elevation={4} className="headings">
+                Semester {key}
+              </Paper>
+              <TableContainer component={Paper} sx={{ width: "fit-content" }}>
+                <Table aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>Subject Name</StyledTableCell>
+                      <StyledTableCell align="right">Credits</StyledTableCell>
+                      <StyledTableCell align="right">Pointer</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {semResult[key].map((row) => (
+                      <StyledTableRow key={row.subjectName}>
+                        <StyledTableCell component="th" scope="row">
+                          {row.subjectName}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.credits}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.pointer}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </motion.div>
+          );
+        })}
     </motion.div>
   );
 };
@@ -181,10 +187,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-function createData(subjectName: string, pointer: string) {
-  return { subjectName, pointer };
-}
 interface Map {
   [key: string]: string;
 }
