@@ -1,12 +1,12 @@
 .search-results {
     .inner-card {
         padding: 15px;
-        width: fit-content;
+        display: inline-block;
     }
 
     .headings {
         padding: 10px;
         margin: 10px 0;
-        width: fit-content;
+        display: inline-block;
     }
 }
